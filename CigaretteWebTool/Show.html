@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Test</title>
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+        $(document).ready(
+            function() {
+
+                $("#test").keydown(function (event) {
+                    alert("keydown() " + ">>>>>>>>>" + event.which);
+                });
+
+                $("#test").keypress(function (event) {
+                    alert("keypress() called." + ">>>>>>>>>" + event.which);
+                });
+
+                $("#test").keyup(function(event) {
+                    alert("keyup() called." + ">>>>>>>>>" + event.which);
+                });
+
+
+                $("#btn").click(function() {
+                    var press = jQuery.Event("keypress");
+                    press.ctrlKey = false;
+                    press.which = 40;
+                    $("#test").trigger(press);
+                });
+
+            }
+        );
+    </script>
+</head>
+<body>
+<input name="test" id="test" value="3"/>
+<br/>
+<button id="btn">Click</button>
+</body>
+</html>
