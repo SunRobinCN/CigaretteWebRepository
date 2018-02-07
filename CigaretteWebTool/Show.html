@@ -9,32 +9,39 @@
         $(document).ready(
             function() {
 
+
                 $("#test").keydown(function (event) {
-                    alert("keydown() " + ">>>>>>>>>" + event.which);
+                    console.log("keydown() called." + ">>>>>>>>>" + event.which);
                 });
 
                 $("#test").keypress(function (event) {
-                    alert("keypress() called." + ">>>>>>>>>" + event.which);
+                    console.log("keypress() called." + ">>>>>>>>>" + event.which);
                 });
 
                 $("#test").keyup(function(event) {
-                    alert("keyup() called." + ">>>>>>>>>" + event.which);
+                    console.log("keyup() called." + ">>>>>>>>>" + event.which);
                 });
 
 
                 $("#btn").click(function() {
-                    var press = jQuery.Event("keypress");
-                    press.ctrlKey = false;
-                    press.which = 40;
-                    $("#test").trigger(press);
+                    del();
                 });
+
+                function del() { 
+                    var msg = "您真的确定要删除吗？\n\n请确认！"; 
+                    if (confirm(msg)==true){ 
+                        return true; 
+                    }else{ 
+                        return false; 
+                    } 
+                } 
 
             }
         );
     </script>
 </head>
 <body>
-<input name="test" id="test" value="3"/>
+<input name="test" id="test" value=""/>
 <br/>
 <button id="btn">Click</button>
 </body>
