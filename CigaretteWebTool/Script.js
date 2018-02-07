@@ -25,6 +25,7 @@ function ExcecuteForAppointedTr(index, theTr) {
         saveRecord();
     } else {
        //失败了，关闭弹出窗口
+        let confirm = function () { return false; }
         $('.d-outer').parent().css("visibility", "hidden");
     }
 }
