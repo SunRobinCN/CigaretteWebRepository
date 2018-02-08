@@ -93,7 +93,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Script.js" />
+    <Content Include="Scripts.html" />
     <Content Include="Show.html" />
     <Content Include="Test.html" />
   </ItemGroup>

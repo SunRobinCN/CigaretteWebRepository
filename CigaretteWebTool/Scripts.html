@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Test</title>
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+
+        $(document).ready(
+            function () {
+
+                function compareWithStock(productID, deptID, name, obj, id) {
+                    var order_id = document.forms[0].elements["rowId"].value;
+                    var order_date = document.forms[0].elements["orderDate"].value;
+                    var productPriceObj = "orderSdDetail[" + id + "].price";
+                    var amtdObj = "orderSdDetail[" + id + "].amtOrder";
+                    $.ajax({
+                        type: "POST",
+                        url: ctx + "/jsp/eb/ctp/orderSdTJ/getProductStock.jsp",
+                        data: "productID=" + productID + "&deptID=" + deptID + "&order_id=" + order_id + "&order_date=" + order_date,
+                        success: function(remain) {
+                            //alert( "剩余量: " + remain );
+                            if (remain * 1 < 0) {
+                                remain = 0;
+                                art.dialog({
+                                    title: '提示',
+                                    content: name + '的货源量为' + remain + '条,已自动帮您更改。'
+                                });
+                                obj.value = remain;
+                                var price = document.forms[0].elements[productPriceObj].value * 1;
+                                document.forms[0].elements[amtdObj].value = FormatNumber(obj.value * 1 * price, 2);
+                                setStyleAfterCheckStock(id);
+                            } else if (obj.value * 1 > remain * 1) //如果大于库存量则自动将订货量改小。
+                            {
+                                art.dialog({
+                                    title: '提示',
+                                    content: name + '的货源量为' + remain + '条,已自动帮您更改。'
+                                });
+                                obj.value = remain;
+                                var price = document.forms[0].elements[productPriceObj].value * 1;
+                                document.forms[0].elements[amtdObj].value = FormatNumber(obj.value * 1 * price, 2);
+                                setStyleAfterCheckStock(id);
+                                alert('ajax check done');
+                                if (!($('.d-outer').parent().css("visibility") === 'visible' &&
+                                    $('.d-content').html().indexOf('为0条') > 0)) {
+                                    //说明成功
+                                    alert("dddd");
+                                    alert('成功了，马上就要提交了');
+                                    saveRecord();
+                                } else {
+                                    //失败了，关闭弹出窗口
+                                    alert('failed, contiue to next row.');
+                                    //theTd.next().children().first().val("");
+                                    $('.d-outer').parent().css("visibility", "hidden");
+                                }
+                                currentIndex++;
+                                if (currentIndex < trArry.length) {
+                                    ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
+                                }
+                            }
+                        }
+                    });
+                }
+
+                function MyRandom() {
+                    var x = 5;
+                    var y = 1;
+                    var rand = parseInt(Math.random() * (x - y + 1) + y);
+                    return rand;
+                }
+
+                function ExcecuteForAppointedTr(index, domTr) {
+                    alert(index);
+                    var theTr = $(domTr);
+                    var theTd = theTr.children().first().next().next().next().next();
+                    var amount = MyRandom();
+                    theTd.next().children().first().val(amount);
+                    var content = $(domTr).html();
+                    var startIndex1 = content.indexOf('orderSdDetail[');
+                    var startIndex2 = content.indexOf('].rowId');
+                    var valueLenght = startIndex2 - startIndex1 - 14;
+                    var indexForCheck = content.substr(startIndex1 + 14, valueLenght);
+                    alert(indexForCheck);
+                    var intIndexForCheck = parseInt(indexForCheck);
+                    qtyDemandChange(theTd.next().children().first()[0], intIndexForCheck);
+                }
+
+                function GetTrArry() {
+                    var arr = [];
+                    $("#dataTable tbody tr").each(function (index, domTr) {
+                        if (index < 11) {
+                            var theTr = $(domTr);
+                            var theTd = theTr.children().first().next().next().next().next();
+                            if (theTd.children().first().val() === "" &&
+                            (theTd.next().next().children().first().val() === "" ||
+                                theTd.next().next().children().first().val() === "0")) {
+                                arr.push(domTr);
+                            }
+                        }
+                    });
+                    return arr;
+                }
+
+                function Start() {
+                    var subs = '次供货限量';
+                    var content = $("body").html();
+                    if (content.indexOf(subs) < 0) {
+                        setTimeout(function() {
+                            $(window).attr('location', 'http://www.tobaccotj.com/ebp/ctp/orderSdTJ/orderSdTJAddEditIni.do');
+                        }, 1000);
+                    } else {
+                        ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
+                    }
+                }
+
+
+                var confirm = function () { return true; }
+                var trArry = GetTrArry();
+                var currentIndex = 0;
+                Start();
+            });
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
+
+
+<script>
+    $("input[value='兰州(硬精品)']").first().parent().next().next().next().next().next().children().first().parent().html();
+    $("input[value='兰州(硬精品)']").first().parent().next().next().next().next().next().children().first().val(5);
+    qtyDemandChange($("input[value='兰州(硬精品)']").first().parent().next().next().next().next().next().children().first()[0], 155)
+
+
+    $("input[value='兰州(硬珍品)']").first().parent().next().next().next().next().next().children().first().parent().html();
+    $("input[value='兰州(硬珍品)']").first().parent().next().next().next().next().next().children().first().val(5);
+    qtyDemandChange($("input[value='兰州(硬珍品)']").first().parent().next().next().next().next().next().children().first()[0], 155)
+
+
+    if (!($('.d-outer').parent().css("visibility") === 'visible' && $('.d-content').html().indexOf('为0条') > 0)) {
+        //说明没有成功
+    }
+</script>
