@@ -10,7 +10,126 @@
         $(document).ready(
             function () {
 
-                function compareWithStock(productID, deptID, name, obj, id) {
+                function qtyDemandChange(obj, id) {
+                    if (null != event && event.keyCode == 0) {
+                        event.keyCode = 13;
+                    }
+                    if (isNaN(obj.value)) {
+                        alert("请输入数字");
+                        document.forms[0].elements["orderSdDetail[" + id + "].qtyReq"].value = "";
+                        return;
+                    }
+                    if (obj.value == "") obj.value = 0;
+                    var productIDObj = "orderSdDetail[" + id + "].productId";
+                    var productPriceObj = "orderSdDetail[" + id + "].price";
+                    var qtyDemandObj = "orderSdDetail[" + id + "].qtyReq";
+                    var qtyOrderdObj = "orderSdDetail[" + id + "].qtyOrder";
+                    var amtdObj = "orderSdDetail[" + id + "].amtOrder";
+                    var qty1Obj = "orderSdDetail[" + id + "].qtyOther1";   //合理定量
+                    var qty6Obj = "orderSdDetail[" + id + "].qtyOther6";   //剩余量
+                    var tag6Obj = "orderSdDetail[" + id + "].tag6";   //卷烟类型：1推荐品牌；2顺销烟；3紧俏烟
+                    if (document.forms[0].elements[productIDObj].value == "") {
+                        clearRow(eval("document.all.dataRow" + id))
+                        return false;
+                    }
+                    var qty1Val = document.forms[0].elements[qty1Obj].value; //合理定量
+                    var qty6Val = document.forms[0].elements[qty6Obj].value; //剩余量
+                    var atyDemandVal = document.forms[0].elements[qtyDemandObj].value; //需求量
+                    var tag6Val = document.forms[0].elements[tag6Obj].value; //卷烟类型
+
+                    if (qty1Val == "" && qty6Val == "") qty1Val = 99999;   //如果是放开品牌的话，可以随便订烟
+                    if (qty1Val == "") qty1Val = qty6Val;
+                    if (qty6Val == "") qty6Val = qty1Val;
+                    qty1Val = Math.min(qty1Val * 1, qty6Val * 1);  //取合理定量和剩余量的小值 
+                    //在需求量大于剩余量或者合理定量时 顺销品牌：大、中型客户自动生成的订单量等于合理定量乘以110%；普通客户自动生成的订单量等于合理定量乘以115%。
+                    if (tag6Val * 1 == 2 && 　atyDemandVal * 1 > qty1Val) {
+                        //判断是否是在投放区域中xiangcr
+                        if (kharea * 1 == 1) {
+                            /*
+                            switch(khdc*1) {
+                                case 6:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 7:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 8:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;  
+                                case 9:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 10:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 11:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 12:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 13:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 14:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 15:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 16:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                                case 17:
+                                    qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
+                                    break;
+                               }
+                               */
+                        } else {
+                            switch (CUSTOMER_GRADE * 1) {
+                                case 5:
+                                    qty1Val = Math.floor(qty1Val * BUSINESS_STRATEGY_ONE, 0);
+                                    break;
+                                case 6:
+                                    qty1Val = Math.floor(qty1Val * BUSINESS_STRATEGY_ONE, 0);
+                                    break;
+                                case 7:
+                                    qty1Val = Math.floor(qty1Val * BUSINESS_STRATEGY_TWO, 0);
+                                    break;
+                            }
+                        }
+                    }
+                    if (tag6Val * 1 != 1 && tag6Val * 1 != 2 && tag6Val * 1 != 3 && tag6Val * 1 != 4)// 
+                    {
+                        qty1Val = 9999;
+                    }
+
+                    //比较是否小于单品限量
+                    qty1Val = FormatNumber(Math.max(Math.min(qty1Val * 1, PRODUCT_UP * 1), 0), 0);
+                    if (atyDemandVal * 1 > qty1Val * 1 && qty1Val != "") {
+                        showChaPrd(document.forms[0].elements[productIDObj].value, qty1Val * 1, id);
+                    }
+
+                    var price = document.forms[0].elements[productPriceObj].value * 1;
+                    document.forms[0].elements[qtyOrderdObj].value = Math.min(atyDemandVal * 1, qty1Val * 1);
+                    /*********************************************************************/
+                    var productIDObj = "orderSdDetail[" + id + "].productId";
+                    var productDescObj = "orderSdDetail[" + id + "].productDesc";
+                    var productID = document.forms[0].elements[productIDObj].value;
+                    var qtyOrderObj = document.forms[0].elements[qtyOrderdObj];
+                    var deptID = document.forms[0].elements["companyId"].value;  //公司
+                    var productDesc = document.forms[0].elements[productDescObj].value;
+                    var getStock = 1;// 是否查询货源剩余量
+                    if (getStock == 1) {
+                        compareWithStockLocal(productID, deptID, productDesc, qtyOrderObj, id);
+                    }
+                    /*********************************************************************/
+                    var qtyOrderd = document.forms[0].elements[qtyOrderdObj].value;
+                    document.forms[0].elements[amtdObj].value = FormatNumber(qtyOrderd * 1 * price, 2);
+                    qtyOrderChange(document.forms[0].elements["orderSdDetail[" + id + "].qtyOrder"], id);
+                }
+
+                function compareWithStockLocal(productID, deptID, name, obj, id) {
                     var order_id = document.forms[0].elements["rowId"].value;
                     var order_date = document.forms[0].elements["orderDate"].value;
                     var productPriceObj = "orderSdDetail[" + id + "].price";
@@ -19,9 +138,12 @@
                         type: "POST",
                         url: ctx + "/jsp/eb/ctp/orderSdTJ/getProductStock.jsp",
                         data: "productID=" + productID + "&deptID=" + deptID + "&order_id=" + order_id + "&order_date=" + order_date,
-                        success: function(remain) {
-                            //alert( "剩余量: " + remain );
-                            if (remain * 1 < 0) {
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert(errorThrown);
+                        },
+                        success: function (remain) {
+                            //alert('ajax check done');
+                            if (remain * 1 <= 0) {
                                 remain = 0;
                                 art.dialog({
                                     title: '提示',
@@ -31,6 +153,20 @@
                                 var price = document.forms[0].elements[productPriceObj].value * 1;
                                 document.forms[0].elements[amtdObj].value = FormatNumber(obj.value * 1 * price, 2);
                                 setStyleAfterCheckStock(id);
+
+                                //alert('failed, contiue to next row.');
+                                $('.d-outer').parent().css("visibility", "hidden");
+                                
+                                var theTd = $(trArry[currentIndex]).children().first().next().next().next().next();
+                                theTd.next().children().first().val("");
+
+                                currentIndex++;
+                                if (currentIndex < trArry.length) {
+                                    ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
+                                } else {
+                                    alert('Over');
+                                }
+
                             } else if (obj.value * 1 > remain * 1) //如果大于库存量则自动将订货量改小。
                             {
                                 art.dialog({
@@ -41,37 +177,35 @@
                                 var price = document.forms[0].elements[productPriceObj].value * 1;
                                 document.forms[0].elements[amtdObj].value = FormatNumber(obj.value * 1 * price, 2);
                                 setStyleAfterCheckStock(id);
-                                alert('ajax check done');
-                                if (!($('.d-outer').parent().css("visibility") === 'visible' &&
-                                    $('.d-content').html().indexOf('为0条') > 0)) {
-                                    //说明成功
-                                    alert("dddd");
-                                    alert('成功了，马上就要提交了');
-                                    saveRecord();
-                                } else {
-                                    //失败了，关闭弹出窗口
-                                    alert('failed, contiue to next row.');
-                                    //theTd.next().children().first().val("");
-                                    $('.d-outer').parent().css("visibility", "hidden");
-                                }
+
+                                //alert('failed, contiue to next row.');
+                                $('.d-outer').parent().css("visibility", "hidden");
+                                var theTd = $(trArry[currentIndex]).children().first().next().next().next().next();
+                                theTd.next().children().first().val("");
+                                
                                 currentIndex++;
                                 if (currentIndex < trArry.length) {
                                     ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
+                                } else {
+                                    alert('Over');
                                 }
+
+                            } else {
+                                //说明成功
+                                $("#save").click();
                             }
                         }
                     });
                 }
 
                 function MyRandom() {
-                    var x = 5;
-                    var y = 1;
+                    var x = 99;
+                    var y = 100;
                     var rand = parseInt(Math.random() * (x - y + 1) + y);
                     return rand;
                 }
 
                 function ExcecuteForAppointedTr(index, domTr) {
-                    alert(index);
                     var theTr = $(domTr);
                     var theTd = theTr.children().first().next().next().next().next();
                     var amount = MyRandom();
@@ -81,24 +215,25 @@
                     var startIndex2 = content.indexOf('].rowId');
                     var valueLenght = startIndex2 - startIndex1 - 14;
                     var indexForCheck = content.substr(startIndex1 + 14, valueLenght);
-                    alert(indexForCheck);
                     var intIndexForCheck = parseInt(indexForCheck);
                     qtyDemandChange(theTd.next().children().first()[0], intIndexForCheck);
                 }
 
                 function GetTrArry() {
                     var arr = [];
-                    $("#dataTable tbody tr").each(function (index, domTr) {
-                        if (index < 11) {
-                            var theTr = $(domTr);
-                            var theTd = theTr.children().first().next().next().next().next();
-                            if (theTd.children().first().val() === "" &&
-                            (theTd.next().next().children().first().val() === "" ||
-                                theTd.next().next().children().first().val() === "0")) {
-                                arr.push(domTr);
-                            }
-                        }
-                    });
+                    //$("#dataTable tbody tr").each(function (index, domTr) {
+                    //    if (index < 1010) {
+                    //        var theTr = $(domTr);
+                    //        var theTd = theTr.children().first().next().next().next().next();
+                    //        if (theTd.children().first().val() === "" &&
+                    //        (theTd.next().next().children().first().val() === "" ||
+                    //            theTd.next().next().children().first().val() === "0")) {
+                    //            arr.push(domTr);
+                    //        }
+                    //    }
+                    //});
+                    var jTr = $("input[value='兰州(硬精品)']").parent().parent();
+                    arr.push(jTr[0]);
                     return arr;
                 }
 
