@@ -1,0 +1,48 @@
+﻿http://www.tobaccotj.com/ebp/
+
+http://www.tobaccotj.com/ebp/ctp/orderSdTJ/orderSdTJAddEditIni.do
+
+120223104027
+
+888888
+
+https://github.com/SunRobinCN/CigaretteWebRepository
+
+
+orderSdTJForm
+
+
+$("input[value='兰州(硬精品)']").parent().parent();
+
+document.getElementByName("mainFrame").src=""
+
+
+document.getElementById('iframe').contentWindow.document.body.innerHTML
+
+
+function RemoveOtherFrams() {
+  var s =  $("input[name='orderSdDetail[7].productStatus']").val(); 
+  alert(s);
+}
+
+
+$('body > iframe').remove();
+
+http://www.tobaccotj.com/ebp/ctp/orderSdTJ/orderSdTJAddEditIni.do
+
+ 
+qtyDemandChange(this,155)
+
+
+$("input[value='兰州(硬精品)']").first().parent().next().next().next().next().next().children().first().parent().html();
+$("input[value='兰州(硬精品)']").first().parent().next().next().next().next().next().children().first().val(5);
+qtyDemandChange($("input[value='兰州(硬精品)']").first().parent().next().next().next().next().next().children().first()[0],155)
+
+
+$("input[value='兰州(硬珍品)']").first().parent().next().next().next().next().next().children().first().parent().html();
+$("input[value='兰州(硬珍品)']").first().parent().next().next().next().next().next().children().first().val(5);
+qtyDemandChange($("input[value='兰州(硬珍品)']").first().parent().next().next().next().next().next().children().first()[0],155)
+
+if($('.d-outer').parent().css("visibility") === 'visible' && $('.d-content').html().indexOf('为0条')>0) {
+	
+}
