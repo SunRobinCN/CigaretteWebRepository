@@ -95,6 +95,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Doc\C.txt" />
+    <Content Include="Doc\common.js" />
+    <Content Include="Doc\orderSdneedTJ.js" />
     <Content Include="Scripts.html" />
     <Content Include="Test.html" />
   </ItemGroup>
