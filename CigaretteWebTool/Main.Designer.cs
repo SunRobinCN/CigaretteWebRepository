@@ -38,7 +38,7 @@
             // 
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webBrowser.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 22);
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.Size = new System.Drawing.Size(1306, 742);
             this.webBrowser.TabIndex = 0;
@@ -57,9 +57,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(34, 31);
+            this.button1.Location = new System.Drawing.Point(12, 59);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(305, 23);
+            this.button1.Size = new System.Drawing.Size(305, 25);
             this.button1.TabIndex = 2;
             this.button1.Text = "刷新";
             this.button1.UseVisualStyleBackColor = true;
@@ -67,7 +67,7 @@
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1306, 742);
             this.Controls.Add(this.panel1);

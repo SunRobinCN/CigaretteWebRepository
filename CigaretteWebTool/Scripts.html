@@ -153,7 +153,6 @@
                                 var price = document.forms[0].elements[productPriceObj].value * 1;
                                 document.forms[0].elements[amtdObj].value = FormatNumber(obj.value * 1 * price, 2);
                                 setStyleAfterCheckStock(id);
-
                                 //alert('failed, contiue to next row.');
                                 $('.d-outer').parent().css("visibility", "hidden");
                                 
@@ -163,8 +162,9 @@
                                 currentIndex++;
                                 if (currentIndex < trArry.length) {
                                     ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
-                                } else {
-                                    alert('Over');
+                                }
+                                else {
+                                    $("#save").click();
                                 }
 
                             } else if (obj.value * 1 > remain * 1) //如果大于库存量则自动将订货量改小。
@@ -180,27 +180,34 @@
 
                                 //alert('failed, contiue to next row.');
                                 $('.d-outer').parent().css("visibility", "hidden");
-                                var theTd = $(trArry[currentIndex]).children().first().next().next().next().next();
-                                theTd.next().children().first().val("");
+                                //var theTd = $(trArry[currentIndex]).children().first().next().next().next().next();
+                                //theTd.next().children().first().val("");
                                 
                                 currentIndex++;
                                 if (currentIndex < trArry.length) {
                                     ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
-                                } else {
-                                    alert('Over');
+                                }
+                                else {
+                                    $("#save").click();
                                 }
 
                             } else {
-                                //说明成功
-                                $("#save").click();
+
+                                currentIndex++;
+                                if (currentIndex < trArry.length) {
+                                    ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
+                                }
+                                else {
+                                    $("#save").click();
+                                }
                             }
                         }
                     });
                 }
 
                 function MyRandom() {
-                    var x = 99;
-                    var y = 100;
+                    var x = 49;
+                    var y = 50;
                     var rand = parseInt(Math.random() * (x - y + 1) + y);
                     return rand;
                 }
@@ -219,25 +226,7 @@
                     qtyDemandChange(theTd.next().children().first()[0], intIndexForCheck);
                 }
 
-                function GetTrArry() {
-                    var arr = [];
-                    //$("#dataTable tbody tr").each(function (index, domTr) {
-                    //    if (index < 1010) {
-                    //        var theTr = $(domTr);
-                    //        var theTd = theTr.children().first().next().next().next().next();
-                    //        if (theTd.children().first().val() === "" &&
-                    //        (theTd.next().next().children().first().val() === "" ||
-                    //            theTd.next().next().children().first().val() === "0")) {
-                    //            arr.push(domTr);
-                    //        }
-                    //    }
-                    //});
-                    var jTr = $("input[value='兰州(硬精品)']").parent().parent();
-                    arr.push(jTr[0]);
-                    var jTr1 = $("input[value='云烟(软珍品)']").parent().parent();
-                    arr.push(jTr1[0]);
-                    return arr;
-                }
+                function GetTrArry() { var arr = [];                    var jTrA = $("input[value='兰州(硬精品)']").parent().parent();                    var jTrB = $("input[value='白沙(硬精品二代)']").parent().parent();                   arr.push(jTrA[0]);  arr.push(jTrB[0]);                    return arr;                }
 
                 function Start() {
                     var subs = '次供货限量';
@@ -245,7 +234,7 @@
                     if (content.indexOf(subs) < 0) {
                         setTimeout(function() {
                             $(window).attr('location', 'http://www.tobaccotj.com/ebp/ctp/orderSdTJ/orderSdTJAddEditIni.do');
-                        }, 1000);
+                        }, 500);
                     } else {
                         ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
                     }
