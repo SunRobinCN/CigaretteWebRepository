@@ -40,9 +40,9 @@
                     if (qty1Val == "" && qty6Val == "") qty1Val = 99999;   //如果是放开品牌的话，可以随便订烟
                     if (qty1Val == "") qty1Val = qty6Val;
                     if (qty6Val == "") qty6Val = qty1Val;
-                    qty1Val = Math.min(qty1Val * 1, qty6Val * 1);  //取合理定量和剩余量的小值 
+                    qty1Val = Math.min(qty1Val * 1, qty6Val * 1);  //取合理定量和剩余量的小值
                     //在需求量大于剩余量或者合理定量时 顺销品牌：大、中型客户自动生成的订单量等于合理定量乘以110%；普通客户自动生成的订单量等于合理定量乘以115%。
-                    if (tag6Val * 1 == 2 && 　atyDemandVal * 1 > qty1Val) {
+                    if (tag6Val * 1 == 2 && atyDemandVal * 1 > qty1Val) {
                         //判断是否是在投放区域中xiangcr
                         if (kharea * 1 == 1) {
                             /*
@@ -55,7 +55,7 @@
                                     break;
                                 case 8:
                                     qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
-                                    break;  
+                                    break;
                                 case 9:
                                     qty1Val = Math.floor(qty1Val*BUSINESS_STRATEGY_TWO,0);
                                     break;
@@ -99,7 +99,7 @@
                             }
                         }
                     }
-                    if (tag6Val * 1 != 1 && tag6Val * 1 != 2 && tag6Val * 1 != 3 && tag6Val * 1 != 4)// 
+                    if (tag6Val * 1 != 1 && tag6Val * 1 != 2 && tag6Val * 1 != 3 && tag6Val * 1 != 4)//
                     {
                         qty1Val = 9999;
                     }
@@ -155,7 +155,7 @@
                                 setStyleAfterCheckStock(id);
                                 //alert('failed, contiue to next row.');
                                 $('.d-outer').parent().css("visibility", "hidden");
-                                
+
                                 var theTd = $(trArry[currentIndex]).children().first().next().next().next().next();
                                 theTd.next().children().first().val("");
 
@@ -182,7 +182,7 @@
                                 $('.d-outer').parent().css("visibility", "hidden");
                                 //var theTd = $(trArry[currentIndex]).children().first().next().next().next().next();
                                 //theTd.next().children().first().val("");
-                                
+
                                 currentIndex++;
                                 if (currentIndex < trArry.length) {
                                     ExcecuteForAppointedTr(currentIndex, trArry[currentIndex]);
@@ -226,13 +226,36 @@
                     qtyDemandChange(theTd.next().children().first()[0], intIndexForCheck);
                 }
 
-                function GetTrArry() { var arr = [];                    var jTrA = $("input[value='兰州(硬精品)']").parent().parent();                    var jTrB = $("input[value='白沙(硬精品二代)']").parent().parent();                   arr.push(jTrA[0]);  arr.push(jTrB[0]);                    return arr;                }
+                function GetTrArry() {
+                    var arr = [];
+                    var jTrA;
+                    var jTrB;
+                    var a = 0;
+                    var b = 0;
+                    try {
+                        jTrA = $("input[value='兰州(硬精品)']").parent().parent();
+                    } catch(e) {
+                        a = 1;
+                    }
+                    try {
+                        jTrB = $("input[value='白沙(硬新精品二代)']").parent().parent();
+                    } catch (e) {
+                        b = 1;
+                    }
+                    if (a === 0) {
+                        arr.push(jTrA[0]);
+                    }
+                    if (b === 0) {
+                        arr.push(jTrB[0]);
+                    }
+                    return arr;
+                }
 
                 function Start() {
                     var subs = '次供货限量';
                     var content = $("body").html();
                     if (content.indexOf(subs) < 0) {
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $(window).attr('location', 'http://www.tobaccotj.com/ebp/ctp/orderSdTJ/orderSdTJAddEditIni.do');
                         }, 500);
                     } else {
