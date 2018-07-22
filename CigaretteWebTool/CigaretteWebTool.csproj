@@ -99,7 +99,6 @@
     <Content Include="Doc\common.js" />
     <Content Include="Doc\orderSdneedTJ.js" />
     <Content Include="Scripts.html" />
-    <Content Include="Test.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
